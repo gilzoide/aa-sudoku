@@ -7,7 +7,7 @@ largura_bloco = 3
 tam_sudoku = altura_bloco * largura_bloco
 
 class Sudoku:
-    """TAD do sudoku, representado em uma matriz 'tam_sudoku x tam_sudoku.
+    """TAD do sudoku, representado em uma matriz 'tam_sudoku x tam_sudoku'.
 nota: valores igual a zero são valores não preenchidos no sudoku."""
     def __init__ (self):
         self.matriz = []
@@ -18,9 +18,14 @@ nota: valores igual a zero são valores não preenchidos no sudoku."""
     def __str__ (self):
         """Representação visual do sudoku em linhas e colunas com os respectivos valores"""
         s = ''
-        for i in range (tam_sudoku):
-            for j in range (tam_sudoku):
-                s += str (self.matriz[i][j]) + ' '
+        for i in self.matriz:
+            for j in i:
+                s += str (j) + ' '
             s += '\n'
 
         return s[:-1]   # retorna string sem o último '\n'
+
+    def getInput (self, stream):
+        """Lê cada valor do sudoku, primeiro em 'linhas x colunas'"""
+        for i in range (len (self.matriz)):
+            self.matriz[i] = stream.readline ().strip ('\n').split (' ')
