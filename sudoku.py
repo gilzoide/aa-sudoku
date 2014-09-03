@@ -26,6 +26,10 @@ nota: valores igual a zero são valores não preenchidos no sudoku."""
         return s[:-1]   # retorna string sem o último '\n'
 
     def getInput (self, stream):
-        """Lê cada valor do sudoku, primeiro em 'linhas x colunas'"""
+        """Lê cada valor numérico do sudoku, primeiro por linha, sem o '\\n' e separado pelos espaços"""
         for i in range (len (self.matriz)):
-            self.matriz[i] = stream.readline ().strip ('\n').split (' ')
+            s = ''
+            # descarta linhas vazias
+            while not s: 
+                s = stream.readline ().strip ('\n')
+            self.matriz[i] = s.split (' ')

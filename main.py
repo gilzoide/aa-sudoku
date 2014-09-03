@@ -8,9 +8,12 @@
 import sys
 from sudoku import Sudoku
 
-a = Sudoku ()
-
 num_testes = int (input ())
 
-a.getInput (sys.stdin)
-print (a)
+# executa cada teste (Sudoku)
+for i in range (num_testes):
+    # cria um sudoku vazio
+    a = Sudoku ()
+    # lê valores da stdin
+    a.getInput (sys.stdin)
+    print ('sudoku ', i + 1, ' \n', a, sep = '')
