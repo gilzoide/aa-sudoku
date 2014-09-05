@@ -2,8 +2,6 @@
 # SCC 0218 - Algoritmos Avançados e Aplicações
 # 31/08/2014
 
-from collections import Counter
-
 altura_bloco = 3
 largura_bloco = 3
 tam_sudoku = altura_bloco * largura_bloco
@@ -73,11 +71,12 @@ def ehJogoValido (sud):
             colunas[j].append (linhas[i][j])
     # verifica repetições de números nas linhas, colunas e quadrados
     for i in linhas, colunas, quadrados:
+        # pra cada linha/coluna/quadrado
         for j in i:
-            # pega o contador mais comum em 'j'; se der 2 ou mais, não é jogo válido
-            # nota: most_common retorna uma lista com uma tupla com o valor mais
-            #  comum e sua contagem, por isso pegamos o valor diretamente com [0][1]
-            count = Counter (j).most_common(1)[0][1]
-            if count > 1:
-                return False
+            # contagem dos números de 1 a tam_sudoku (ignora zeros); 
+            # se tiver mais de um de tais, não é um jogo válido
+            for num in range (tam_sudoku):
+                if j.count (num + 1) > 1:
+                    print ('\033[31m\033[1mEita, desrespeita as regras!\n\033[0m')
+                    return False
     return True
