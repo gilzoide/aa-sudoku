@@ -6,7 +6,7 @@
 # 31/08/2014
 
 import sys
-from sudoku import Sudoku
+from sudoku import *
 
 num_testes = int (input ())
 
@@ -16,4 +16,6 @@ for i in range (num_testes):
     a = Sudoku ()
     # lê valores da stdin
     a.getInput (sys.stdin)
+    a.resolve ()
+
     print ('sudoku ', i + 1, ' \n', a, sep = '')
