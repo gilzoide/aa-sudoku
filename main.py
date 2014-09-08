@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/bin/env pypy3
 # Linha acima permite rodar o script direto pelo shell
 
 # Gil Barbosa Reis - 8532248
