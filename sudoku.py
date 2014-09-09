@@ -1,6 +1,7 @@
 # Gil Barbosa Reis - 8532248
+# Leonardo Sampaio Ferraz Ribeiro - 8532300
 # SCC 0218 - Algoritmos Avançados e Aplicações
-# 31/08/2014
+# 08/09/2014
 
 altura_bloco = 3
 largura_bloco = 3

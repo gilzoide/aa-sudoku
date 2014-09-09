@@ -6,8 +6,9 @@
 # 2ª pro trem saber que aqui é raça utf-8!
 
 # Gil Barbosa Reis - 8532248
+# Leonardo Sampaio Ferraz Ribeiro - 8532300
 # SCC 0218 - Algoritmos Avançados e Aplicações
-# 31/08/2014
+# 08/09/2014
 
 import sys
 from sudoku import Sudoku
