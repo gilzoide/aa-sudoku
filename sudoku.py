@@ -2,8 +2,6 @@
 # SCC 0218 - Algoritmos Avançados e Aplicações
 # 31/08/2014
 
-from subprocess import call
-
 altura_bloco = 3
 largura_bloco = 3
 tam_sudoku = altura_bloco * largura_bloco
@@ -44,10 +42,8 @@ nota: valores igual a zero são valores não preenchidos no sudoku."""
         """Mágica! Resolve o tal do sudoku xD"""
         # Some backtracks and shit
         self.it = 0
-        if self.goBacktrack (0, 0):
-            print ('sucesso!')
-        else:
-            print ('ahhhhhh =/')
+        self.goBacktrack (0, 0)
+        print ('Terminado na ', self.it + 1, 'ª atribuição na matriz\n', sep='')
 
     def goBacktrack (self, linha, coluna):
         """Faz um passo no backtrack
@@ -75,12 +71,13 @@ nota: valores igual a zero são valores não preenchidos no sudoku."""
                 self.it += 1
                 if self.goBacktrack (proxLinha, proxColuna):
                     return True
+            # se por acaso tentar as possibilidades não tenham dado certo, retorna
+            self.matriz[linha][coluna] = 0
+            return False
+
         except Exception:
             return ehSolucao (self)
 
-        # se por acaso tentar as possibilidades não tenham dado certo, retorna
-        self.matriz[linha][coluna] = 0
-        return False
             
 
 

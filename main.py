@@ -1,12 +1,16 @@
 #!/bin/env pypy3
-# Linha acima permite rodar o script direto pelo shell
+# coding: utf-8
+
+# 1ª linha permite rodar o script direto pelo shell;
+# preferência pelo pypy que é mais rápido
+# 2ª pro trem saber que aqui é raça utf-8!
 
 # Gil Barbosa Reis - 8532248
 # SCC 0218 - Algoritmos Avançados e Aplicações
 # 31/08/2014
 
 import sys
-from sudoku import *
+from sudoku import Sudoku
 
 num_testes = int (input ())
 
