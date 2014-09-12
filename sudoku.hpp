@@ -17,6 +17,8 @@
 #include <vector>
 #include <queue>
 
+#define NENHUM -1
+
 class Sudoku {
     
 	friend std::ostream& operator<< (std::ostream& os, const Sudoku& sud);
@@ -153,6 +155,56 @@ private:
     std::pair<int, int> proxima_casa();
     
     /**
+     * Encontra um valor possível para a posição
+     * escolhida
+     *
+     * @param posicao
+     * posição escolhida
+     *
+     * @return
+     * um valor possivel para a posição
+     * NENHUM caso não hajam mais valores possíveis
+     */
+    int valor_possivel_para_esta_posicao(std::pair<int, int> posicao);
+    
+    /**
+     * Faz a atribuição na posição desejada
+     * caso faça o uso da verificação adiante, atualiza
+     * a lista de valores possíveis
+     *
+     * @param posicao
+     * posição onde será feita atribuição
+     *
+     * @param valor
+     * valor que será atribuído
+     */
+    void faz_atribuicao(std::pair<int, int> posicao, int valor);
+    
+    /**
+     * Desfaz a atribuição na posição desejada
+     * caso faça o uso da verificação adiante, atualiza
+     * a lista de valores possíveis
+     *
+     * @param posicao
+     * posição onde será desfeita a atribuição
+     */
+    void desfaz_atribuicao(std::pair<int, int> posicao);
+    
+    /**
+     * atualiza as lista de valores remanescentes
+     *
+     * @param posicao
+     * posição onde será feita atribuição
+     *
+     * @param valor_antigo
+     * valor que existia anteriormente
+     *
+     * @param valor_novo
+     * valor que foi atribuído
+     */
+    void atualiza_listas_de_valores_remanescentes(std::pair<int, int> posicao, int valor_antigo, int valor_novo);
+    
+    /**
      * Verifica se o jogo é válido, se respeita as regras
      *
      * @return 
@@ -183,6 +235,12 @@ private:
      * verdadeiro para jogada válida, falso caso contrário
      */
     bool eh_uma_jogada_valida(std::pair<int, int> posicao, int valor);
+    
+    /**
+     * Retorna uma posição em relação a sua posição 
+     * em determinado quadrado
+     */
+    std::pair<int, int> posicao_j_no_quadrado_i(int j, int i);
     
 };
 
