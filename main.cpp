@@ -1,6 +1,14 @@
-/*
- * Resolvedor de Sudoku, pra AAA
- */
+/*  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *
+ *
+ * SCC0218 • Algoritmos Avançados e Aplicações
+ *
+ * Projeto 01 • Backtracking
+ * main.cpp
+ *
+ * Gil Barbosa Reis                     NUSPº 8532248
+ * Leonardo Sampaio Ferraz Ribeiro      NUSPº 8532300
+ *
+ *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
 
 #include "sudoku.hpp"
 #include <iostream>
@@ -8,6 +16,7 @@
 using namespace std;
 
 int main () {
+    
 	int num_testes;
 	cin >> num_testes;
 

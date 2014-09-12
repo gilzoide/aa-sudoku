@@ -1,7 +1,21 @@
+/*  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *
+ *
+ * SCC0218 • Algoritmos Avançados e Aplicações
+ *
+ * Projeto 01 • Backtracking
+ * sudoku.hpp
+ *
+ * Gil Barbosa Reis                     NUSPº 8532248
+ * Leonardo Sampaio Ferraz Ribeiro      NUSPº 8532300
+ *
+ *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
+
 #ifndef SUDOKU_HPP
 #define SUDOKU_HPP
 
 #include <iostream>
+#include <vector>
+#include <queue>
 
 class Sudoku {
     
@@ -9,6 +23,8 @@ class Sudoku {
     friend std::istream& operator>> (std::istream& is, const Sudoku& sud);
 
 public:
+    
+    /// constantes do jogo
 	const static int altura_bloco = 3;
 	const static int largura_bloco = 3;
 	const static int tam_sudoku = altura_bloco * largura_bloco;
@@ -56,6 +72,26 @@ private:
     /// matriz com possível solução
     int solucao[tam_sudoku][tam_sudoku];
     
+    /** 
+     * Matriz de Valores Remanescentes
+     * cada posição possui o valor 0 ou 1 indicando se x pode
+     * ser utlizado ou não, a última posição contem a quantidade
+     * de valores remanescentes
+     */
+    char valores_remanescentes[tam_sudoku][tam_sudoku][tam_sudoku+1];
+    
+    /**
+     * Vetor de Número Valores Remanescentes
+     * cada posição no vetor contém um pair contendo a 
+     * posição desta variável e o número de valores
+     * remanescentes (um ponteiro para parte da estrutura
+     * valores_remanescentes declarada acima)
+     *
+     * deve ser mantido ordenado por número de valores
+     * remanescentes
+     */
+    std::vector<std::pair<int, int>, char*> nro_de_valores_remanescentes;
+    
     /// contador de atribuições
 	int cont = 0;
     
@@ -74,6 +110,38 @@ private:
      * falsa no caso contrário
      */
     bool backtracking_recursivo();
+    
+    /**
+     * Busca posição no tabuleiro usando
+     * a heurística de [mínimos valores remanescentes]
+     *
+     * @return
+     * posição que possui o mínimo de valores remanescentes
+     */
+    std::pair<int, int> posicao_com_MVR();
+    
+    /**
+     * Executa a verificação adiante para identificar 
+     * se um determinado movimento vai render um futuro
+     * jogo válido
+     *
+     * @return
+     * verdadeiro se possível jogo válido no futuro, 
+     * falso no caso contrário
+     */
+    bool passa_na_verificacao_adiante();
+    
+    /**
+     * Prepara os atributos necessários para 
+     * realizar a verificação adiante
+     */
+    void prepara_verificacao_adiante();
+    
+    /**
+     * Prepara os atributos necessários para
+     * utlizar a heurística MVR
+     */
+    void prepara_MVR();
     
     /**
      * Encontra a próxima casa
@@ -115,6 +183,7 @@ private:
      * verdadeiro para jogada válida, falso caso contrário
      */
     bool eh_uma_jogada_valida(std::pair<int, int> posicao, int valor);
+    
 };
 
 #endif
