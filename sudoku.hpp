@@ -15,7 +15,7 @@
 
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <curses.h>
 
 #define NENHUM -1
 
@@ -30,12 +30,6 @@ public:
 	const static int altura_bloco = 3;
 	const static int largura_bloco = 3;
 	const static int tam_sudoku = altura_bloco * largura_bloco;
-
-    /**
-     * Construtor Default
-     * sem argumentos
-     */
-	Sudoku ();
     
 	/**
      * Construtor que lê matriz de entradas
@@ -46,7 +40,7 @@ public:
      * ser realizada ou não
      *
      */
-	Sudoku (bool pega_da_stdin);
+	Sudoku (bool pega_da_stdin = true);
     
     /**
      * Resolve um jogo de Sudoku utilizando 
@@ -92,7 +86,7 @@ private:
      * deve ser mantido ordenado por número de valores
      * remanescentes
      */
-    std::vector<std::pair<int, int>, char*> nro_de_valores_remanescentes;
+    std::vector<std::pair<std::pair<int, int>, char*> > nro_de_valores_remanescentes;
     
     /// contador de atribuições
 	int cont = 0;

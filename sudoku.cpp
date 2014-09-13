@@ -14,34 +14,26 @@
 
 using namespace std;
 
-Sudoku::Sudoku () : cont (0) {}
-
 Sudoku::Sudoku (bool pega_da_stdin) {
-	Sudoku ();
 	if (pega_da_stdin) {
-        cin >> this;
+        for (int y = 0; y < this->tam_sudoku; y++) {
+            for (int x = 0; x < this->tam_sudoku; x++) {
+                cin >> this->matriz[x][y];
+                this->solucao[x][y] = matriz[x][y];
+            }
+        }
 	}
 }
 
 ostream& operator<< (ostream& os, const Sudoku& sud) {
-	for (int i = 0; i < Sudoku::tam_sudoku; i++) {
-		for (int j = 0; j < Sudoku::tam_sudoku; j++) {
-			os << sud.matriz[i][j] << ' ';
+    for (int y = 0; y < Sudoku::tam_sudoku; y++) {
+        for (int x = 0; x < Sudoku::tam_sudoku; x++) {
+			os << sud.solucao[x][y] << ' ';
 		}
 		os << '\n';
 	}
 
 	return os;
-}
-
-istream& operator>> (istream& is, const Sudoku& sud) {
-    for (int i = 0; i < sud.tam_sudoku; i++) {
-        for (int j = 0; j < sud.tam_sudoku; j++) {
-            is >> sud.matriz[i][j];
-        }
-    }
-    
-    return is;
 }
 
 void Sudoku::solve(bool verificacao_adiante, bool verificacao_adiante_e_MVR) {
@@ -54,7 +46,12 @@ void Sudoku::solve(bool verificacao_adiante, bool verificacao_adiante_e_MVR) {
     prepara_listas_de_valores_remanescentes();
     
     // da início a recursão do algoritmo de backtracking
-    backtracking_recursivo();
+    if (!backtracking_recursivo()) {
+        cout << "Não foi possível encontrar uma solução!" << endl;
+    }
+    
+    // imprime o contador de atribuições
+    cout << "\nNúmero de Atribuições: " << this->cont << endl;
 }
 
 bool Sudoku::backtracking_recursivo() {
@@ -78,6 +75,17 @@ bool Sudoku::backtracking_recursivo() {
             // faz a atribuição e incrementa o contador
             faz_atribuicao(posicao_atual, valor_possivel);
             
+            // verificação adiante
+            if ((verificacao_adiante || verificacao_adiante_e_MVR)
+            && (!passa_na_verificacao_adiante())) {
+                desfaz_atribuicao(posicao_atual);
+                continue;
+            }
+            
+#warning debug code running
+            //system("clear");
+            //cout <<  *this;
+            
             // recursivamente parte para próxima casa
             if (backtracking_recursivo()) {
                 return true;
@@ -86,6 +94,13 @@ bool Sudoku::backtracking_recursivo() {
             // desiste deste valor, desfaz atribuição
             desfaz_atribuicao(posicao_atual);
         }
+    }
+    
+    // se não usar verificação adiante,
+    // restaura valores possíveis para esta posição
+    if (!(verificacao_adiante || verificacao_adiante_e_MVR)) {
+        for (int i = 0; i < tam_sudoku; i++)
+            valores_remanescentes[posicao_atual.first][posicao_atual.second][i] = 1;
     }
     
     // não há solução válida nesta configuração
@@ -127,15 +142,17 @@ int Sudoku::valor_possivel_para_esta_posicao(pair<int, int> posicao) {
     return NENHUM;
 }
 
-void Sudoku::faz_atribuicao(std::pair<int, int> posicao, int valor) {
+void Sudoku::faz_atribuicao(pair<int, int> posicao, int valor) {
     
     // faz a atribuição
     solucao[posicao.first][posicao.second] = valor;
-
+    
     atualiza_listas_de_valores_remanescentes(posicao, 0, valor);
+    
+    this->cont++;
 }
 
-void Sudoku::desfaz_atribuicao(std::pair<int, int> posicao) {
+void Sudoku::desfaz_atribuicao(pair<int, int> posicao) {
     
     // salva valor antigo
     int valor_antigo = solucao[posicao.first][posicao.second];
@@ -178,6 +195,10 @@ void Sudoku::atualiza_listas_de_valores_remanescentes(std::pair<int, int> posica
             }
         }
     }
+        
+        // re-ordena lista com número de valores remanescentes
+#warning operação de ordenação aqui!!
+    
 }
 
 bool Sudoku::eh_um_jogo_valido() {
@@ -234,7 +255,7 @@ bool Sudoku::eh_uma_solucao() {
     return true;
 }
 
-bool Sudoku::eh_uma_jogada_valida(std::pair<int, int> posicao, int valor) {
+bool Sudoku::eh_uma_jogada_valida(pair<int, int> posicao, int valor) {
     
     // se estiver usando verificação adiante,
     // a validade da jogada está garantida pelas listas de
@@ -246,14 +267,19 @@ bool Sudoku::eh_uma_jogada_valida(std::pair<int, int> posicao, int valor) {
     int quadrado = posicao.first/3 + (posicao.second/3)*3;
     
     // verifica todos os valores afetados
-    for (int i; i < tam_sudoku; i++) {
+    for (int i = 0; i < tam_sudoku; i++) {
         
         // encontra posição no quadrado
         pair<int, int> posicao_quadrado = posicao_j_no_quadrado_i(i, quadrado);
         
         if ((solucao[posicao.first][i] == valor)
-        || solucao[i][posicao.second] == valor
-        || solucao[posicao_quadrado.first][posicao_quadrado.second]) {
+        || (solucao[i][posicao.second] == valor)
+        || (solucao[posicao_quadrado.first][posicao_quadrado.second] == valor)) {
+            
+            // se não usar otimizações, atualiza lista de valores remanescentes
+            if (!(verificacao_adiante_e_MVR || verificacao_adiante))
+                retira_lista_de_valores_remanescentes(posicao, valor);
+            
             return false;
         }
     }
@@ -273,7 +299,25 @@ bool Sudoku::passa_na_verificacao_adiante() {
 }
 
 void Sudoku::prepara_verificacao_adiante() {
-    // TODO: Your code here!
+    
+    // para cada posição no tabuleiro
+    for (int y = 0; y < Sudoku::tam_sudoku; y++) {
+        for (int x = 0; x < Sudoku::tam_sudoku; x++) {
+            
+            // identifica o quadrado
+            int quadrado = x/3 + (y/3)*3;
+            
+            // para cada posição na linha/coluna/quadrado pertencente a este
+            for (int i = 0; i < tam_sudoku; i++) {
+                
+                // encontra posição no quadrado
+                pair<int, int> posicao_quadrado = posicao_j_no_quadrado_i(i, quadrado);
+                
+                // TODO: A LOOOOT!
+        
+            }
+        }
+    }
 }
 
 void Sudoku::prepara_MVR() {
@@ -305,7 +349,7 @@ void Sudoku::prepara_listas_de_valores_remanescentes() {
 }
 
 pair<int, int> Sudoku::posicao_j_no_quadrado_i(int j, int i) {
-    return pair<int, int>(j%altura_bloco + (altura_bloco*i)%tam_sudoku, j/altura_bloco + i);
+    return pair<int, int>(j%altura_bloco + (altura_bloco*i)%tam_sudoku, j/altura_bloco + (i/3)*3);
 }
 
 
