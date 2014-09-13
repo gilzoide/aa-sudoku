@@ -146,6 +146,11 @@ private:
     void prepara_MVR();
     
     /**
+     * Prepara as listas de valores remanescentes
+     */
+    void prepara_listas_de_valores_remanescentes();
+    
+    /**
      * Encontra a próxima casa
      * do jogo que deve ser trabalhada
      *
@@ -203,6 +208,19 @@ private:
      * valor que foi atribuído
      */
     void atualiza_listas_de_valores_remanescentes(std::pair<int, int> posicao, int valor_antigo, int valor_novo);
+    
+    /** 
+     * auxiliares para retirar ou adicionar um valor a
+     * lista de valores remanescentes
+     */
+    inline void adiciona_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor) {
+        valores_remanescentes[posicao.first][posicao.second][valor-1] = 1;
+        valores_remanescentes[posicao.first][posicao.second][valor-1]++;
+    }
+    inline void retira_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor) {
+        valores_remanescentes[posicao.first][posicao.second][valor-1] = 0;
+        valores_remanescentes[posicao.first][posicao.second][valor-1]--;
+    }
     
     /**
      * Verifica se o jogo é válido, se respeita as regras
