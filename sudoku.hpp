@@ -90,11 +90,11 @@ private:
     /// contador de atribuições
 	int cont = 0;
     
-    /// flag, indica se o jogo foi resolvido
-    bool resolvido = false;
-    
     /// flags, indicam otimizações no algorítmo
     bool verificacao_adiante, verificacao_adiante_e_MVR;
+    
+    // contador para a profundidade da recursão
+    int profundidade_da_recursao = 0;
     
     /**
      * Executa um algoritmo recursivo do tipo
@@ -194,7 +194,7 @@ private:
      * lista de valores remanescentes
      */
     void adiciona_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor);
-    void retira_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor, int estado = 0);
+    void retira_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor);
     
     /**
      * Verifica se o jogo é válido, se respeita as regras

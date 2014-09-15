@@ -55,7 +55,10 @@ void Sudoku::solve(bool verificacao_adiante, bool verificacao_adiante_e_MVR) {
 }
 
 bool Sudoku::backtracking_recursivo() {
-        
+    
+    // atualiza a profundidade (nova chamada)
+    profundidade_da_recursao++;
+    
     // checa se uma solução válida foi encontrada
     if (eh_uma_solucao() && eh_um_jogo_valido())
         return true;
@@ -92,6 +95,9 @@ bool Sudoku::backtracking_recursivo() {
             desfaz_atribuicao(posicao_atual);
         }
     }
+    
+    // atualiza a profundidade (fim da chamada)
+    profundidade_da_recursao--;
     
     // não há solução válida nesta configuração
     return false;
@@ -170,9 +176,6 @@ void Sudoku::atualiza_listas_de_valores_remanescentes(std::pair<int, int> posica
                 adiciona_lista_de_valores_remanescentes(quadrado, valor_antigo);
             }
         }
-        
-        //if (valor_novo == 0)
-          //  retira_lista_de_valores_remanescentes(posicao, valor_antigo);
     }
         
         // re-ordena lista com número de valores remanescentes
@@ -311,13 +314,13 @@ void Sudoku::prepara_verificacao_adiante() {
                 pair<int, int> posicao_quadrado = posicao_j_no_quadrado_i(i, quadrado);
                 
                 if (matriz[i][y] > 0) {
-                    retira_lista_de_valores_remanescentes(posicao, matriz[i][y], -1);
+                    retira_lista_de_valores_remanescentes(posicao, matriz[i][y]);
                 }
                 if (matriz[x][i] > 0) {
-                    retira_lista_de_valores_remanescentes(posicao, matriz[x][i], -1);
+                    retira_lista_de_valores_remanescentes(posicao, matriz[x][i]);
                 }
                 if (matriz[posicao_quadrado.first][posicao_quadrado.second] > 0) {
-                    retira_lista_de_valores_remanescentes(posicao, matriz[posicao_quadrado.first][posicao_quadrado.second], -1);
+                    retira_lista_de_valores_remanescentes(posicao, matriz[posicao_quadrado.first][posicao_quadrado.second]);
                 }
             }
             
@@ -361,15 +364,15 @@ pair<int, int> Sudoku::posicao_j_no_quadrado_i(int j, int i) {
 }
 
 void Sudoku::adiciona_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor) {
-    if (valores_remanescentes[posicao.first][posicao.second][valor-1] < 1) {
+    if (valores_remanescentes[posicao.first][posicao.second][valor-1] == -profundidade_da_recursao) {
         valores_remanescentes[posicao.first][posicao.second][valor-1] = 1;
         valores_remanescentes[posicao.first][posicao.second][tam_sudoku]++;
     }
     
 }
-void Sudoku::retira_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor, int estado) {
+void Sudoku::retira_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor) {
     if (valores_remanescentes[posicao.first][posicao.second][valor-1] == 1) {
-        valores_remanescentes[posicao.first][posicao.second][valor-1] = estado;
+        valores_remanescentes[posicao.first][posicao.second][valor-1] = -profundidade_da_recursao;
         valores_remanescentes[posicao.first][posicao.second][tam_sudoku]--;
     }
 }
