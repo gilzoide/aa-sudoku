@@ -234,6 +234,12 @@ private:
      */
     std::pair<int, int> posicao_j_no_quadrado_i(int j, int i);
     
+    /**
+     * método ajudante para ordenação do vetor
+     * nro_de_valores_remanescentes
+     */
+    static bool comparador_nro_de_valores_remanescentes(std::pair<std::pair<int, int>, char*> a, std::pair<std::pair<int, int>, char*> b);
+    
 };
 
 #endif

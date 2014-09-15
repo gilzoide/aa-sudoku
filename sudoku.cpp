@@ -147,39 +147,37 @@ void Sudoku::desfaz_atribuicao(pair<int, int> posicao) {
 }
 
 void Sudoku::atualiza_listas_de_valores_remanescentes(std::pair<int, int> posicao, int valor_antigo, int valor_novo) {
+        
+    // identifica o quadrado
+    int quadrado = posicao.first/altura_bloco + (posicao.second/altura_bloco)*altura_bloco;
     
-    // se usar verificação adiante
-    if (verificacao_adiante || verificacao_adiante_e_MVR) {
+    // percorre a linha/coluna/quadrado da posição modificada
+    for (int i = 0; i < tam_sudoku; i++) {
         
-        // identifica o quadrado
-        int quadrado = posicao.first/altura_bloco + (posicao.second/altura_bloco)*altura_bloco;
+        // encontra posição no quadrado
+        pair<int, int> posicao_quadrado = posicao_j_no_quadrado_i(i, quadrado);
         
-        // percorre a linha/coluna/quadrado da posição modificada
-        for (int i = 0; i < tam_sudoku; i++) {
-            
-            // encontra posição no quadrado
-            pair<int, int> posicao_quadrado = posicao_j_no_quadrado_i(i, quadrado);
-            
-            pair<int, int> linha(i, posicao.second);
-            pair<int, int> coluna(posicao.first, i);
-            pair<int, int> quadrado(posicao_quadrado.first, posicao_quadrado.second);
-            
-            // atualiza listas dos valores afetados
-            if (valor_novo > 0) {
-                retira_lista_de_valores_remanescentes(linha, valor_novo);
-                retira_lista_de_valores_remanescentes(coluna, valor_novo);
-                retira_lista_de_valores_remanescentes(quadrado, valor_novo);
-            }
-            else {
-                adiciona_lista_de_valores_remanescentes(linha, valor_antigo);
-                adiciona_lista_de_valores_remanescentes(coluna, valor_antigo);
-                adiciona_lista_de_valores_remanescentes(quadrado, valor_antigo);
-            }
+        pair<int, int> linha(i, posicao.second);
+        pair<int, int> coluna(posicao.first, i);
+        pair<int, int> quadrado(posicao_quadrado.first, posicao_quadrado.second);
+        
+        // atualiza listas dos valores afetados
+        if (valor_novo > 0) {
+            retira_lista_de_valores_remanescentes(linha, valor_novo);
+            retira_lista_de_valores_remanescentes(coluna, valor_novo);
+            retira_lista_de_valores_remanescentes(quadrado, valor_novo);
+        }
+        else {
+            adiciona_lista_de_valores_remanescentes(linha, valor_antigo);
+            adiciona_lista_de_valores_remanescentes(coluna, valor_antigo);
+            adiciona_lista_de_valores_remanescentes(quadrado, valor_antigo);
         }
     }
         
-        // re-ordena lista com número de valores remanescentes
-#warning operação de ordenação aqui!!
+    // re-ordena lista com número de valores remanescentes (se usar MVR)
+    if (verificacao_adiante_e_MVR) {
+        sort(nro_de_valores_remanescentes.begin(), nro_de_valores_remanescentes.end(), comparador_nro_de_valores_remanescentes);
+    }
     
 }
 
@@ -268,8 +266,20 @@ bool Sudoku::eh_uma_jogada_valida(pair<int, int> posicao, int valor) {
 }
 
 std::pair<int, int> Sudoku::posicao_com_MVR() {
-    // TODO: Your code here!
-    return pair<int, int> (1, 1);
+    
+    // percorre lista ordenada pelo número de valores remanescentes
+    std::vector<std::pair<std::pair<int, int>, char*> >::iterator it;
+    for (it = nro_de_valores_remanescentes.begin(); it != nro_de_valores_remanescentes.end();
+         ++it) {
+        
+        // checa se um valor não possui atribuição
+        if (solucao[it->first.first][it->first.second] == 0) {
+            return it->first;
+        }
+    }
+    
+    // erro!!!
+    return pair<int, int>(0, 0);
 }
 
 bool Sudoku::passa_na_verificacao_adiante() {
@@ -290,7 +300,6 @@ bool Sudoku::passa_na_verificacao_adiante() {
         if (verificacao_adiante_e_MVR && *(it->second) > 0) {
             break;
         }
-        
     }
     
     // passou! vá ser feliz!
@@ -332,7 +341,7 @@ void Sudoku::prepara_verificacao_adiante() {
 }
 
 void Sudoku::prepara_MVR() {
-    // TODO: Your code here!
+    sort(nro_de_valores_remanescentes.begin(), nro_de_valores_remanescentes.end(), comparador_nro_de_valores_remanescentes);
 }
 
 void Sudoku::prepara_listas_de_valores_remanescentes() {
@@ -377,7 +386,9 @@ void Sudoku::retira_lista_de_valores_remanescentes(std::pair<int, int> posicao, 
     }
 }
 
-
+bool Sudoku::comparador_nro_de_valores_remanescentes(pair<pair<int, int>, char*> a, pair<pair<int, int>, char*> b) {
+    return *(a.second) < *(b.second);
+}
 
 
 
