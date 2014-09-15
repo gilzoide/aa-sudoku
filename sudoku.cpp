@@ -14,7 +14,7 @@
 
 using namespace std;
 
-Sudoku::Sudoku (bool pega_da_stdin) {
+Sudoku::Sudoku (bool pega_da_stdin) : otimizacao (NENHUMA) {
 	if (pega_da_stdin) {
         for (int y = 0; y < this->tam_sudoku; y++) {
             for (int x = 0; x < this->tam_sudoku; x++) {
@@ -36,11 +36,10 @@ ostream& operator<< (ostream& os, const Sudoku& sud) {
 	return os;
 }
 
-void Sudoku::solve(bool verificacao_adiante, bool verificacao_adiante_e_MVR) {
+void Sudoku::solve(Otimizacoes opt) {
     
     // atribui os parâmetros de otimizações aos parâmetros do objeto
-    this->verificacao_adiante = verificacao_adiante;
-    this->verificacao_adiante_e_MVR = verificacao_adiante_e_MVR;
+    this->otimizacao = opt;
     
     // prepara_listas_de_valores_remanescentes (!!!)
     prepara_listas_de_valores_remanescentes();
@@ -80,8 +79,7 @@ bool Sudoku::backtracking_recursivo() {
             //cout <<  *this;
             
             // verificação adiante
-            if ((verificacao_adiante || verificacao_adiante_e_MVR)
-            && (!passa_na_verificacao_adiante())) {
+            if ((otimizacao != NENHUMA) && (!passa_na_verificacao_adiante())) {
                 desfaz_atribuicao(posicao_atual);
                 continue;
             }
@@ -106,7 +104,7 @@ bool Sudoku::backtracking_recursivo() {
 std::pair<int, int> Sudoku::proxima_casa() {
     
     // checa se deve aplicar a heurística MVR
-    if (verificacao_adiante_e_MVR) {
+    if (otimizacao == MVR) {
         return posicao_com_MVR();
     }
     
@@ -128,7 +126,7 @@ void Sudoku::faz_atribuicao(pair<int, int> posicao, int valor) {
     // faz a atribuição
     solucao[posicao.first][posicao.second] = valor;
     
-    if (verificacao_adiante || verificacao_adiante_e_MVR)
+    if (otimizacao != NENHUMA)
         atualiza_listas_de_valores_remanescentes(posicao, 0, valor);
     
     this->cont++;
@@ -142,7 +140,7 @@ void Sudoku::desfaz_atribuicao(pair<int, int> posicao) {
     // faz a atribuição
     solucao[posicao.first][posicao.second] = 0;
     
-    if (verificacao_adiante || verificacao_adiante_e_MVR)
+    if (otimizacao != NENHUMA)
         atualiza_listas_de_valores_remanescentes(posicao, valor_antigo, 0);
 }
 
@@ -175,7 +173,7 @@ void Sudoku::atualiza_listas_de_valores_remanescentes(std::pair<int, int> posica
     }
         
     // re-ordena lista com número de valores remanescentes (se usar MVR)
-    if (verificacao_adiante_e_MVR) {
+    if (otimizacao == MVR) {
         sort(nro_de_valores_remanescentes.begin(), nro_de_valores_remanescentes.end(), comparador_nro_de_valores_remanescentes);
     }
     
@@ -238,7 +236,7 @@ bool Sudoku::eh_uma_solucao() {
 bool Sudoku::eh_uma_jogada_valida(pair<int, int> posicao, int valor) {
     
     // se estiver usando verificação adiante,
-    if (verificacao_adiante || verificacao_adiante_e_MVR) {
+    if (otimizacao != NENHUMA) {
         return valores_remanescentes[posicao.first][posicao.second][valor-1] == 1;
     }
     
@@ -297,7 +295,7 @@ bool Sudoku::passa_na_verificacao_adiante() {
         
         // se estivermos usando MVR, a lista está ordenada,
         // e qualquer valor > 0 indica que não existem mais valores
-        if (verificacao_adiante_e_MVR && *(it->second) > 0) {
+        if (otimizacao == MVR && *(it->second) > 0) {
             break;
         }
     }
@@ -360,9 +358,9 @@ void Sudoku::prepara_listas_de_valores_remanescentes() {
     }
     
     // preparação diferenciada para diferentes heurísticas
-    if (verificacao_adiante || verificacao_adiante_e_MVR) {
+    if (otimizacao != NENHUMA) {
         prepara_verificacao_adiante();
-        if (verificacao_adiante_e_MVR)
+        if (otimizacao == MVR)
             prepara_MVR();
     }
     

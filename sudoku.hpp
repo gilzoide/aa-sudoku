@@ -15,8 +15,17 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #define NENHUM -1
+
+/// Otimizações para o resolvedor
+enum Otimizacoes {
+	NENHUMA,
+	FC,	///< Verificação adiante (forward checking)
+	MVR	///< Mínimos valores remanescentes
+};
+
 
 class Sudoku {
     
@@ -46,17 +55,16 @@ public:
      * um algoritmo de backtracking com diversas
      * modificações voltadas a um melhor desempenho
      *
-     * @param verificacao_adiante
-     * flag: backtracking com verificação adiante. backtracking
+     * @param opt
+	 * escolhe a modificação a ser usada. Possíveis valores:
+	 * FC: backtracking com verificação adiante. Backtracking
      * é realizado quando uma variável fica sem nenhum valor
      * disponível;
-     *
-     * @param verificacao_adiante_e_MVR
-     * flag: backtracking com verificação adiante e mínimos 
+     * MVR: backtracking com verificação adiante e mínimos 
      * valores remanescentes. Idem ao anterior com a adição da
      * heurística MVR para decidir a próxima variável.
      */
-    void solve(bool verificacao_adiante = false, bool verificacao_adiante_e_MVR = false);
+    void solve (Otimizacoes opt);
     
 
 private:
@@ -90,8 +98,8 @@ private:
     /// contador de atribuições
 	int cont = 0;
     
-    /// flags, indicam otimizações no algorítmo
-    bool verificacao_adiante, verificacao_adiante_e_MVR;
+    /// flag indicando otimização a ser usada
+    Otimizacoes otimizacao;
     
     // contador para a profundidade da recursão
     int profundidade_da_recursao = 0;
