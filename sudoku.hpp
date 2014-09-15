@@ -153,19 +153,6 @@ private:
     std::pair<int, int> proxima_casa();
     
     /**
-     * Encontra um valor possível para a posição
-     * escolhida
-     *
-     * @param posicao
-     * posição escolhida
-     *
-     * @return
-     * um valor possivel para a posição
-     * NENHUM caso não hajam mais valores possíveis
-     */
-    int valor_possivel_para_esta_posicao(std::pair<int, int> posicao);
-    
-    /**
      * Faz a atribuição na posição desejada
      * caso faça o uso da verificação adiante, atualiza
      * a lista de valores possíveis

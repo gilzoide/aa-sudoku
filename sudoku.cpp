@@ -55,13 +55,6 @@ void Sudoku::solve(bool verificacao_adiante, bool verificacao_adiante_e_MVR) {
 }
 
 bool Sudoku::backtracking_recursivo() {
-    
-    // auxiliares
-    int valor_possivel;
-    bool checado[tam_sudoku];
-    
-    // inicializa lista de valores checados
-    for (int i = 0; i < tam_sudoku; i++) checado[i] = false;
         
     // checa se uma solução válida foi encontrada
     if (eh_uma_solucao() && eh_um_jogo_valido())
@@ -71,20 +64,17 @@ bool Sudoku::backtracking_recursivo() {
     pair<int, int> posicao_atual = proxima_casa();
     
     // para cada valor possível
-    while ((valor_possivel = valor_possivel_para_esta_posicao(posicao_atual)) != NENHUM) {
+    for (int valor_possivel = 1; valor_possivel <= tam_sudoku; valor_possivel++) {
         
         // checa se a jogada é válida
-        if (eh_uma_jogada_valida(posicao_atual, valor_possivel) && !checado[valor_possivel-1]) {
-            
-            // marca o valor como checado
-            checado[valor_possivel-1] = true;
+        if (eh_uma_jogada_valida(posicao_atual, valor_possivel)) {
             
             // faz a atribuição e incrementa o contador
             faz_atribuicao(posicao_atual, valor_possivel);
             
 #warning debug code running
-            system("clear");
-            cout <<  *this;
+            //system("clear");
+            //cout <<  *this;
             
             // verificação adiante
             if ((verificacao_adiante || verificacao_adiante_e_MVR)
@@ -101,16 +91,7 @@ bool Sudoku::backtracking_recursivo() {
             // desiste deste valor, desfaz atribuição
             desfaz_atribuicao(posicao_atual);
         }
-        
-        retira_lista_de_valores_remanescentes(posicao_atual, valor_possivel, -2);
     }
-    
-    // restaura valores possíveis para esta posição
-    for (int i = 0; i < tam_sudoku; i++)
-        if (valores_remanescentes[posicao_atual.first][posicao_atual.second][i] == -2) {
-            valores_remanescentes[posicao_atual.first][posicao_atual.second][i-1] = 1;
-            valores_remanescentes[posicao_atual.first][posicao_atual.second][tam_sudoku]++;
-        }
     
     // não há solução válida nesta configuração
     return false;
@@ -136,27 +117,13 @@ std::pair<int, int> Sudoku::proxima_casa() {
     return pair<int, int>(0, 0);
 }
 
-int Sudoku::valor_possivel_para_esta_posicao(pair<int, int> posicao) {
-    
-    // percorre lista de valores possíveis
-    for (int i = 0; i < tam_sudoku; i++) {
-        
-        // e encontra valor possível
-        if (valores_remanescentes[posicao.first][posicao.second][i] == 1) {
-            return i+1;
-        }
-    }
-    
-    // erro! sem valores possíveis
-    return NENHUM;
-}
-
 void Sudoku::faz_atribuicao(pair<int, int> posicao, int valor) {
     
     // faz a atribuição
     solucao[posicao.first][posicao.second] = valor;
     
-    atualiza_listas_de_valores_remanescentes(posicao, 0, valor);
+    if (verificacao_adiante || verificacao_adiante_e_MVR)
+        atualiza_listas_de_valores_remanescentes(posicao, 0, valor);
     
     this->cont++;
 }
@@ -169,10 +136,8 @@ void Sudoku::desfaz_atribuicao(pair<int, int> posicao) {
     // faz a atribuição
     solucao[posicao.first][posicao.second] = 0;
     
-    //if (valor_antigo > tam_sudoku)
-        //return;
-    
-    atualiza_listas_de_valores_remanescentes(posicao, valor_antigo, 0);
+    if (verificacao_adiante || verificacao_adiante_e_MVR)
+        atualiza_listas_de_valores_remanescentes(posicao, valor_antigo, 0);
 }
 
 void Sudoku::atualiza_listas_de_valores_remanescentes(std::pair<int, int> posicao, int valor_antigo, int valor_novo) {
@@ -272,11 +237,11 @@ bool Sudoku::eh_uma_solucao() {
 bool Sudoku::eh_uma_jogada_valida(pair<int, int> posicao, int valor) {
     
     // se estiver usando verificação adiante,
-    // a validade da jogada está garantida pelas listas de
-    // valores remanescentes
     if (verificacao_adiante || verificacao_adiante_e_MVR) {
-        return true;
+        return valores_remanescentes[posicao.first][posicao.second][valor-1] == 1;
     }
+    
+    // caso contrário, verifica linhas, colunas e quadrados
     
     // identifica o quadrado (uso do arredondamento de ints (.../altura_bloco)*altura_bloco)
     int quadrado = posicao.first/altura_bloco + (posicao.second/altura_bloco)*altura_bloco;
