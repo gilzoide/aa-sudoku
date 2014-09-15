@@ -74,9 +74,10 @@ bool Sudoku::backtracking_recursivo() {
             // faz a atribuição e incrementa o contador
             faz_atribuicao(posicao_atual, valor_possivel);
             
-#warning debug code running
-            //system("clear");
-            //cout <<  *this;
+#ifdef DEBUG
+			system ("clear");
+			cout <<  *this;
+#endif
             
             // verificação adiante
             if ((otimizacao != NENHUMA) && (!passa_na_verificacao_adiante())) {

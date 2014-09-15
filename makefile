@@ -3,11 +3,15 @@
 objs = main.o sudoku.o
 exe = resolvedorDeSudoku
 CXX = g++
-CXXFLAGS = -g -Wall -O2 -pipe -std=c++11
+CXXFLAGS = -Wall -O2 -pipe -std=c++11
 
 
 all : $(objs)
 	$(CXX) $(CXXFLAGS) $(objs) -o $(exe)
+
+# make debug adiciona -DDEBUG e chama o all ali encima
+debug : CXXFLAGS += -DDEBUG -g
+debug : all
 
 main.o : main.cpp sudoku.o
 	$(CXX) $(CXXFLAGS) -c $<

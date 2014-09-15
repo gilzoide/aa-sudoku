@@ -37,7 +37,8 @@ Uso: resolvedorDeSudoku [OPÇÃO]\n\
 Opções aceitas:\n\
 \t-f ou --fc: resolver usando verificação adiante\n\
 \t-m ou --mvr: resolver usando verificação adiante e heurística de mínimos \
-valores remanescentes\n";
+valores remanescentes\n\
+\t-h ou --help: mostra essa mensagem de ajuda\n";
 			return 0;
 		}
 	}
