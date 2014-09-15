@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include <vector>
-#include <curses.h>
 
 #define NENHUM -1
 
@@ -207,14 +206,8 @@ private:
      * auxiliares para retirar ou adicionar um valor a
      * lista de valores remanescentes
      */
-    inline void adiciona_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor) {
-        valores_remanescentes[posicao.first][posicao.second][valor-1] = 1;
-        valores_remanescentes[posicao.first][posicao.second][valor-1]++;
-    }
-    inline void retira_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor) {
-        valores_remanescentes[posicao.first][posicao.second][valor-1] = 0;
-        valores_remanescentes[posicao.first][posicao.second][valor-1]--;
-    }
+    void adiciona_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor);
+    void retira_lista_de_valores_remanescentes(std::pair<int, int> posicao, int valor, int estado = 0);
     
     /**
      * Verifica se o jogo é válido, se respeita as regras

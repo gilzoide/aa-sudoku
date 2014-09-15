@@ -23,7 +23,7 @@ int main () {
 	// laço principal
 	for (int i = 0; i < num_testes; i++) {
 		Sudoku teste (true);
-        teste.solve();
+        teste.solve(true);
 		cout << "sudoku " << i + 1 << ":\n" << teste << '\n';
 	}
 
