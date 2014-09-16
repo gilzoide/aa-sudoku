@@ -16,7 +16,8 @@
 using namespace std;
 
 int main (int argc, char *argv[]) {
-	// otimização a ser usada para resolver: vem como argumento
+	
+    // otimização a ser usada para resolver: vem como argumento
 	Otimizacoes opt = NENHUMA;
 	string arg;
 	if (argc > 1) {
