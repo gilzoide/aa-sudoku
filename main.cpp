@@ -51,7 +51,8 @@ valores remanescentes\n\
 	for (int i = 0; i < num_testes; i++) {
 		Sudoku teste (true);
 		teste.solve (opt);
-		cout << "sudoku " << i + 1 << ":\n" << teste << '\n';
+		// cout << "sudoku " << i + 1 << ":\n";
+        cout << teste << "\n";
 	}
 
 	return 0;

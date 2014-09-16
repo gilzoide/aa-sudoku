@@ -50,7 +50,7 @@ void Sudoku::solve(Otimizacoes opt) {
     }
     
     // imprime o contador de atribuições
-    cout << "\nNúmero de Atribuições: " << this->cont << endl;
+    // cout << "\nNúmero de Atribuições: " << this->cont << endl;
 }
 
 bool Sudoku::backtracking_recursivo() {
