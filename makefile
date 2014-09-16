@@ -23,6 +23,9 @@ sudoku.o : sudoku.cpp sudoku.hpp
 run :
 	@./$(exe)
 
+zip :
+	zip 8532248_8532300_P01 *.cpp *.hpp makefile entrada.txt SCC0218_T01.pdf
+
 
 clean :
 	$(RM) *~ *.o $(exe)
