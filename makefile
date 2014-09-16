@@ -11,6 +11,7 @@ all : $(objs)
 
 # make debug adiciona -DDEBUG e chama o all ali encima
 debug : CXXFLAGS += -DDEBUG -g
+debug : clean
 debug : all
 
 main.o : main.cpp sudoku.o
